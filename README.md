@@ -93,5 +93,5 @@ Global Flags:
  下载tar.gz包后，拉取某个环境的基线，复制一份到baseline-standard文件夹下当做标准基线，才可使用compare功能。
 
 ## 配置文件config.ini
- - namespace: 填写你想要扫描的命名空间。
+ - namespace: 填写你想要操作的命名空间。
  - kubeconfig: 填写k8s集群认证文件的路径。
