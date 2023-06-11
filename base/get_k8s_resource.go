@@ -1,10 +1,9 @@
-package pkg
+package base
 
 import (
 	"context"
 	"errors"
 	"github.com/wonderivan/logger"
-	"k8s-baseline-scanner/pkg/tools"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
@@ -13,22 +12,18 @@ var K8sRce k8sRce
 type k8sRce struct {
 }
 
-func (*k8sRce) GetStaticPod() {
-
-}
-
 // 获取deployment、statefulset、daemonset资源对应的容器
-func (*k8sRce) GetContainers() AllContainers {
+func (*k8sRce) GetContainers() []ResourceContainer {
 	var (
+		allctrs           []ResourceContainer
 		resourcectr       ResourceContainer
-		allContainers     AllContainers
 		getDeploymentsErr = "获取deployments失败: "
 		getStsErr         = "获取sts失败: "
 		getDsErr          = "获取ds失败: "
 		resourceType      string
 		namespace         string
 	)
-	for _, ns := range tools.GetNamespace() {
+	for _, ns := range GetNamespaceList() {
 		//获取deployment类型的应用和对应的container
 		deployList, err := K8sInit.GetClientSet().AppsV1().Deployments(ns).List(context.TODO(), metav1.ListOptions{})
 		if err != nil {
@@ -40,7 +35,7 @@ func (*k8sRce) GetContainers() AllContainers {
 			resourceType = "Deployment"
 			resourcectr.ResourceInfo = namespace + "," + resourceType + "," + deploy.Name
 			resourcectr.Containers = deploy.Spec.Template.Spec.Containers
-			allContainers.AllContainers = append(allContainers.AllContainers, resourcectr)
+			allctrs = append(allctrs, resourcectr)
 		}
 
 		//获取sts类型的应用和对应的container
@@ -54,7 +49,7 @@ func (*k8sRce) GetContainers() AllContainers {
 			resourceType = "StatefulSet"
 			resourcectr.ResourceInfo = namespace + "," + resourceType + "," + sts.Name
 			resourcectr.Containers = sts.Spec.Template.Spec.Containers
-			allContainers.AllContainers = append(allContainers.AllContainers, resourcectr)
+			allctrs = append(allctrs, resourcectr)
 		}
 
 		//获取ds类型的应用和对应的container
@@ -68,10 +63,10 @@ func (*k8sRce) GetContainers() AllContainers {
 			resourceType = "DaemontSet"
 			resourcectr.ResourceInfo = namespace + "," + resourceType + "," + ds.Name
 			resourcectr.Containers = ds.Spec.Template.Spec.Containers
-			allContainers.AllContainers = append(allContainers.AllContainers, resourcectr)
+			allctrs = append(allctrs, resourcectr)
 		}
 	}
-	return allContainers
+	return allctrs
 }
 
 // 获取deployment、statefulset、daemonset资源
@@ -88,7 +83,7 @@ func GetResources() []DeployStsDsBase {
 		Resourcename      string
 	)
 
-	for _, ns := range tools.GetNamespace() {
+	for _, ns := range GetNamespaceList() {
 		namespace = ns
 		//获取deployment类型的应用
 		deployList, err := K8sInit.GetClientSet().AppsV1().Deployments(ns).List(context.TODO(), metav1.ListOptions{})

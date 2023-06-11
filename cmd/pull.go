@@ -6,8 +6,8 @@ package cmd
 import (
 	"fmt"
 	"github.com/spf13/cobra"
-	"k8s-baseline-scanner/pkg"
-	"k8s-baseline-scanner/pkg/service"
+	"k8s-baseline-scanner-v2/base"
+	"k8s-baseline-scanner-v2/service"
 	"os"
 )
 
@@ -23,7 +23,8 @@ var pullCmd = &cobra.Command{
 			fmt.Println("pls use pull -h for help.")
 			os.Exit(0)
 		}
-		pkg.K8sInit.GetClientSet()
+		//初始化k8s客户端
+		base.K8sInit.GetClientSet()
 		pull()
 	},
 }
@@ -34,6 +35,8 @@ func init() {
 		"输入你想拉取的资源名称,如下: \n"+
 			"all\n"+
 			"pvc\n"+
+			"service\n"+
+			"secret\n"+
 			"volume\n"+
 			"cm\n"+
 			"replicas\n"+
@@ -43,35 +46,44 @@ func init() {
 			"env\n"+
 			"image\n"+
 			"probe\n"+
-			"volumeMount\n")
-
+			"volumeMount\n"+
+			"container_resource\n")
 }
 
 func pull() {
 	switch pullArg {
 	case "all":
-		service.StartAllAction()
+		service.PullAllResource()
+	case "service":
+		service.PullAllService()
+	case "secret":
+		service.PullAllSecret()
 	case "pvc":
-		service.Resource.GetAllPvc()
+		service.PullAllPvc()
 	case "volume":
-		service.Resource.GetAllVolume()
+		service.PullAllVolume()
 	case "cm":
-		service.Resource.GetAllConfigmap()
+		service.PullAllConfigmap()
 	case "replicas":
-		service.Resource.GetAllReplicas()
+		service.PullAllReplica()
 	case "affinity":
-		service.Resource.GetAllAffinity()
+		service.PullAllAffinity()
+	case "container_resource":
+		service.PullAllContainerResources()
 	case "nodeSelector":
-		service.Resource.GetAllNodeSelector()
+		service.PullAllNodeSelector()
 	case "toleration":
-		service.Resource.GetAllToleration()
+		service.PullAllToleration()
 	case "env":
-		service.Container.GetAllEnv()
+		service.PullAllEnv()
 	case "image":
-		service.Container.GetAllImage()
+		service.PullAllImage()
 	case "probe":
-		service.Container.GetAllProbe()
+		service.PullAllProbe()
 	case "volumeMount":
-		service.Container.GetAllVolumeMount()
+		service.PullAllVolumeMount()
+	default:
+		fmt.Println("参数有误,请检查输入的参数.")
+		os.Exit(1)
 	}
 }

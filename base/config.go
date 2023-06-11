@@ -1,8 +1,9 @@
-package config
+package base
 
 const (
-	DataDirectory         = "../data/baseline_current/"
-	StdBaselineDir        = "../baseline-standard/"
+	DataDirectory         = "./data/current-baseline/"
+	ConfigDirectory       = "./config/config.ini"
+	StdBaselineDir        = "./standard-baseline/"
 	ProbeFile             = "1-probe.json"
 	EnvFile               = "2-env.json"
 	ImageFile             = "3-image.json"

@@ -4,30 +4,30 @@ import (
 	"context"
 	"errors"
 	"github.com/wonderivan/logger"
-	"k8s-baseline-scanner/config"
-	p "k8s-baseline-scanner/pkg"
-	"k8s-baseline-scanner/pkg/tools"
+	b "k8s-baseline-scanner-v2/base"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"strconv"
 )
 
-func (*resource) GetAllService() {
+func PullAllService() {
 	var (
-		svc       p.Service
-		asvc      p.AllService
-		GetSvcErr = "获取service失败: "
-		msg       = "service"
+		svc     b.Service
+		svcLt   []b.Service
+		asvc    b.AllService
+		msgName = "service"
+		file    = b.ServiceFile
 	)
-
-	for _, ns := range tools.GetNamespace() {
-		svcList, err := p.K8sInit.GetClientSet().CoreV1().Services(ns).List(context.TODO(), metav1.ListOptions{})
+	asvc = make(map[string][]b.Service)
+	for _, ns := range b.GetNamespaceList() {
+		svcList, err := b.K8sInit.GetClientSet().CoreV1().Services(ns).List(context.TODO(), metav1.ListOptions{})
 		if err != nil {
+			GetSvcErr := "获取service失败: "
 			logger.Error(errors.New(GetSvcErr + err.Error()))
 			panic(errors.New(GetSvcErr + err.Error()))
 		}
 		for _, svc2 := range svcList.Items {
-			svc.Selector = make(map[string]string, 10)
-			svc.ServiceInfo = ns + "," + svc2.Name + "," + string(svc2.Spec.Type)
+			svc.Selector = make(map[string]string)
+			svc.ServiceInfo = svc2.Name + "," + string(svc2.Spec.Type)
 			for k, v := range svc2.Spec.Selector {
 				svc.Selector[k] = v
 			}
@@ -47,12 +47,12 @@ func (*resource) GetAllService() {
 					svc.Potrs = append(svc.Potrs, portInfo)
 				}
 			}
-			asvc.AllService = append(asvc.AllService, svc)
-			svc = p.Service{}
+			svcLt = append(svcLt, svc)
+			svc = b.Service{}
 		}
+		asvcKey := ns
+		asvc[asvcKey] = svcLt
+		svcLt = nil
 	}
-	tools.Writer.WriteIntoFile(config.ServiceFile, &asvc)
-	filePath := config.DataDirectory + config.ServiceFile
-	tools.CleanNullInFile(filePath)
-	tools.GetSuccessMsg(msg)
+	b.WriteDataIntoFile(msgName, file, &asvc)
 }

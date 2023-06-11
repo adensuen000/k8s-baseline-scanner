@@ -15,12 +15,9 @@ var cfgFile string
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:   "k8s-baseline-scanner",
+	Use:   "k8s-baseline-scanner-v2",
 	Short: "scan current baseline and get the difference between them by compare them.",
 	Long:  `scan current baseline and get the difference between them by compare them.`,
-	// Uncomment the following line if your bare application
-	// has an action associated with it:
-	// Run: func(cmd *cobra.Command, args []string) { },
 }
 
 func Execute() {
@@ -32,9 +29,8 @@ func Execute() {
 
 func init() {
 	cobra.OnInitialize(initConfig)
-	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.k8s-baseline-scanner.yaml)")
+	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.k8s-baseline-scanner-v2.yaml)")
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
-
 }
 
 // initConfig reads in config file and ENV variables if set.
@@ -47,10 +43,10 @@ func initConfig() {
 		home, err := os.UserHomeDir()
 		cobra.CheckErr(err)
 
-		// Search config in home directory with name ".k8s-baseline-scanner" (without extension).
+		// Search config in home directory with name ".k8s-baseline-scanner-v2" (without extension).
 		viper.AddConfigPath(home)
 		viper.SetConfigType("yaml")
-		viper.SetConfigName(".k8s-baseline-scanner")
+		viper.SetConfigName(".k8s-baseline-scanner-v2")
 	}
 
 	viper.AutomaticEnv() // read in environment variables that match
