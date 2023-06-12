@@ -16,7 +16,7 @@
  - kubeconfig: 填写k8s集群认证文件的路径。
 
 ## 使用方式
-- 下载解压后，进入./bin目录，以./xxxx方式执行二进制文件即可。
+- 下载解压后，修改./config/config.ini, 进入./bin目录，以./xxxx方式执行二进制文件即可。
 - 主要命令如下
 > 查看子命令（主要为pull、compare）
 ```html
