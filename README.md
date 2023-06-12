@@ -10,8 +10,13 @@
 * 基线信息包含：statefulset、deployment、deamonset的如下信息：probe、env、image、containerresource、volume、volumeMount、nodeSelector、toleration、affinity、configmap、secret、service、pvc、replicas。
 * 拉取的配置以json方式存入./data/baseline_current文件夹。
 ---
+
+## 配置文件config.ini
+- namespace: 填写你想要操作的命名空间。
+- kubeconfig: 填写k8s集群认证文件的路径。
+
 ## 使用方式
-- 下载解压后，进入./bin目录，以./xxxx方式执行二进制文件即可。
+- 下载解压后，修改./config/config.ini配置, 进入./bin目录，以./xxxx方式执行二进制文件即可。
 - 主要命令如下
 > 查看子命令（主要为pull、compare）
 ```html
@@ -92,6 +97,4 @@ Global Flags:
 ## 初使用compare功能
  下载tar.gz包后，拉取某个环境的基线，复制一份到baseline-standard文件夹下当做标准基线，才可使用compare功能。
 
-## 配置文件config.ini
- - namespace: 填写你想要操作的命名空间。
- - kubeconfig: 填写k8s集群认证文件的路径。
+
