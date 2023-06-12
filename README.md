@@ -95,4 +95,4 @@ Global Flags:
 ```
 
 ## 初使用compare功能
- 下载tar.gz包后，拉取某个环境的基线，复制一份到baseline-standard文件夹下当做标准基线，才可使用compare功能。
+ 下载tar.gz包后，拉取某个环境的基线，复制一份到standard-baseline文件夹下当做标准基线，才可使用compare功能。
